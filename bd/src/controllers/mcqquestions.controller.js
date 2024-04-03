@@ -57,6 +57,45 @@ const getAllQuestions = asyncHandler(async (req, res) => {
   }
 });
 
+const getAllQuestionsByTitleAndCategory = asyncHandler(async (req, res) => {
+  const { category, searchTerm } = req.query;
+
+  console.log(category);
+
+  // Build the query object for filtering
+  const searchQuery =
+    category?.toLowerCase() === "all"
+      ? {
+          title: { $regex: searchTerm, $options: "i" }, // Uses a case-insensitive regex to match the searchItem in the title
+        }
+      : {
+          tags: category.toLowerCase(), // Matches documents with the specified tag in their tags array
+          title: { $regex: searchTerm, $options: "i" }, // Uses a case-insensitive regex to match the searchItem in the title
+        };
+
+  console.log(searchQuery);
+
+  try {
+    const questions = await MCQQuestion.find(searchQuery);
+
+    const totalQuestions = await MCQQuestion.countDocuments(searchQuery); // Count total questions for pagination
+
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        {
+          questions,
+          totalQuestions,
+        },
+        "Questions retrieved successfully"
+      )
+    );
+  } catch (error) {
+    console.error(error);
+    throw new ApiError(500, "Error retrieving questions");
+  }
+});
+
 const publishAQuestion = asyncHandler(async (req, res) => {
   console.log("Dave");
 
@@ -158,5 +197,6 @@ export {
   publishAQuestion,
   getQuestionById,
   updateQuestion,
+  getAllQuestionsByTitleAndCategory,
   //   deleteQuestion,
 };

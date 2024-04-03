@@ -63,10 +63,15 @@ const getAllQuestionsByTitleAndCategory = asyncHandler(async (req, res) => {
   // console.log(category, searchTerm);
 
   // Build the query object for filtering
-  const searchQuery = {
-      tags: category.toLowerCase(), // Matches documents with the specified tag in their tags array
-      title: { $regex: searchTerm, $options: "i" }, // Uses a case-insensitive regex to match the searchItem in the title
-    };
+     const searchQuery =
+       category?.toLowerCase() === "all"
+         ? {
+             title: { $regex: searchTerm, $options: "i" }, // Uses a case-insensitive regex to match the searchItem in the title
+           }
+         : {
+             tags: category.toLowerCase(), // Matches documents with the specified tag in their tags array
+             title: { $regex: searchTerm, $options: "i" }, // Uses a case-insensitive regex to match the searchItem in the title
+           };
 
   try {
     const questions = await CodingQuestion.find(searchQuery);

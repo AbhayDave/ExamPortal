@@ -15,15 +15,14 @@ const SearchBar = ({
   const onSearch = async (questionType, category, searchTerm) => {
     // console.log(`Searching for "${searchTerm}" in category: "${category}"`);
     if (!searchTerm || !category || !questionType) return;
-    if (questionType === "Coding") {
-      const questions = await getQuestionsBasedOnCategoryAndTitle(
-        category,
-        searchTerm
-      );
-      return questions;
-    } else {
-      return ["MCQ"];
-    }
+
+    const questions = await getQuestionsBasedOnCategoryAndTitle(
+      questionType,
+      category,
+      searchTerm
+    );
+
+    return questions;
   };
 
   const handleSearch = async (e) => {
@@ -54,7 +53,7 @@ const SearchBar = ({
 
   return (
     <div>
-      <form className="flex items-center" onSubmit={handleSearch}>
+      <form className="flex items-center" mx-auto onSubmit={handleSearch}>
         <select
           value={selectedQuestionType}
           onChange={handleQuestionTypeChange}

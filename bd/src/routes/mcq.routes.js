@@ -5,6 +5,7 @@ import {
   publishAQuestion,
   getQuestionById,
   updateQuestion,
+  getAllQuestionsByTitleAndCategory,
 } from "../controllers/mcqquestions.controller.js";
 
 
@@ -13,6 +14,9 @@ import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 // Route for getting all questions with pagination, sorting, and filtering
 router.get("/", getAllQuestions);
+
+
+router.get("/search", getAllQuestionsByTitleAndCategory);
 
 // Route for creating a new question
 router.post("/", publishAQuestion);

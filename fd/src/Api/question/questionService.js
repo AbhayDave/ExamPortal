@@ -3,6 +3,7 @@ import axios from "axios";
 const baseUrl = "http://localhost:8000/api/v1";
 
 export async function getQuestionsBasedOnCategoryAndTitle(
+  questionType,
   category,
   searchTerm
 ) {
@@ -12,7 +13,15 @@ export async function getQuestionsBasedOnCategoryAndTitle(
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
     };
-    const response = await axios.get(`${baseUrl}/questions/search`, {
+
+    const ApiUrl =
+      questionType.toLowerCase() === "coding"
+        ? `${baseUrl}/questions/search`
+        : `${baseUrl}/mcq/questions/search`;
+
+    console.log(ApiUrl);
+
+    const response = await axios.get(ApiUrl, {
       params: {
         category,
         searchTerm,
@@ -21,7 +30,7 @@ export async function getQuestionsBasedOnCategoryAndTitle(
     });
 
     if (response) {
-      // console.log(response.data.data.questions);
+      console.log(response.data.data.questions);
       return response.data.data.questions;
     }
   } catch (error) {

@@ -10,6 +10,8 @@ function QuestionHut() {
     "LinkedList",
     "Recursion",
     "String",
+    "Geography",
+    "Compilers",
   ];
 
   // const [questionTypeCategories, setQuestionTypeCategories] = useState(null);
@@ -59,14 +61,30 @@ function QuestionHut() {
       </div>
       <div>
         {selectedQuestion ? (
-          <div className="min-w-2/5 border mx-auto p-5">
-            <h2 className="text-2xl">{selectedQuestion.title}</h2>
-            <h2 className="text-lg text-red-500 hover:underline" onClick={copy}>
-              {selectedQuestion._id}
-            </h2>
-            <h2 className="text-lg">{selectedQuestion.description}</h2>
-            <h2 className="text-lg">{selectedQuestion.difficulty}</h2>
-          </div>
+          selectedQuestion.type === "Coding" ? (
+            <div className="min-w-2/5 border mx-auto p-5">
+              <h2 className="text-2xl">{selectedQuestion.title}</h2>
+              <h2
+                className="text-lg text-red-500 hover:underline"
+                onClick={copy}
+              >
+                {selectedQuestion._id}
+              </h2>
+              <h2 className="text-lg">{selectedQuestion.description}</h2>
+              <h2 className="text-lg">{selectedQuestion.difficulty}</h2>
+            </div>
+          ) : (
+            <div className="min-w-2/5 border mx-auto p-5">
+              <h2 className="text-2xl">{selectedQuestion.title}</h2>
+              <h2
+                className="text-lg text-red-500 hover:underline"
+                onClick={copy}
+              >
+                {selectedQuestion._id}
+              </h2>
+              <ul className="text-lg">{selectedQuestion.options.map((option) => <li key={option}>{option}</li>)}</ul>
+            </div>
+          )
         ) : (
           <div className=""></div>
         )}

@@ -64,22 +64,23 @@ function CreateExamForm() {
               required: true,
             })}
           />
-          <Input
+          {/* <Input
             type="file"
             label="Eligible Students: "
             placeholder="Eligible Students"
             className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+            accept=".xlsx, .xls"
             {...register("attendes", {
               required: true,
             })}
-          />
+          /> */}
 
           <Input
             type="text"
             label="Coding Questions: "
             placeholder="Enter Question's Id"
             className="w-full col-span-2 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-            {...register("Questions", {
+            {...register("CodingQuestions", {
               required: true,
             })}
           />
@@ -89,7 +90,7 @@ function CreateExamForm() {
             label="MCQ Questions: "
             placeholder="Enter Question's Id"
             className="w-full col-span-2 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-            {...register("Questions", {
+            {...register("MCQQuestions", {
               required: true,
             })}
           />
