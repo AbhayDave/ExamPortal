@@ -1,20 +1,43 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react";
+import { getQuestionsBasedOnCategoryAndTitle } from "../Api/question/questionService";
 
 const SearchBar = ({
   questionTopicCategories,
   questionTypeCategories,
-  onSearch,
   setSelectedQuestion,
 }) => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedQuestionType, setSelectedQuestionType] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchResults, setSearchResults] = useState(null);
+
+  const onSearch = async (questionType, category, searchTerm) => {
+    // console.log(`Searching for "${searchTerm}" in category: "${category}"`);
+    if (!searchTerm || !category || !questionType) return;
+    if (questionType === "Coding") {
+      const questions = await getQuestionsBasedOnCategoryAndTitle(
+        category,
+        searchTerm
+      );
+      return questions;
+    } else {
+      return ["MCQ"];
+    }
+  };
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    const results = await onSearch(selectedCategory, searchTerm);
-    setSearchResults(results);
+    const results = await onSearch(
+      selectedQuestionType,
+      selectedCategory,
+      searchTerm
+    );
+    if (results?.length > 0) {
+      setSearchResults(results);
+    } else {
+      return null;
+    }
   };
 
   const handleCategoryChange = (e) => {
@@ -75,20 +98,20 @@ const SearchBar = ({
           Search
         </button>
       </form>
-      {searchResults.length > 0 ? (
+
+      {searchResults ? (
         <div className="mt-4 min-h-32 max-h-96 overflow-y-scroll">
           <h3 className="text-lg font-medium mb-2">Search Results</h3>
           <ul className="list-disc space-y-2">
-            {searchResults.map((result) => (
+            {searchResults.map((question) => (
               <li
                 className="bg-red-400"
-                key={result.id}
+                key={question._id}
                 onClick={() => {
-                  setSelectedQuestion(result);
+                  setSelectedQuestion(question);
                 }}
               >
-                {/* Display result information here based on your data structure */}
-                {result.title || result.name}
+                {question.title}
               </li>
             ))}
           </ul>

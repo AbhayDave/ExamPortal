@@ -2,21 +2,27 @@
 import axios from "axios";
 const baseUrl = "http://localhost:8000/api/v1";
 
-export async function loginUser({ email, password, name }) {
+export async function getQuestionsBasedOnCategoryAndTitle(
+  category,
+  searchTerm
+) {
   try {
-    const response = await axios.post(`${baseUrl}/users/login`, {
-      email,
-      password,
-      name,
+    const accessToken = localStorage.getItem("accessToken");
+    const headers = {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    };
+    const response = await axios.get(`${baseUrl}/questions/search`, {
+      params: {
+        category,
+        searchTerm,
+      },
+      headers,
     });
 
     if (response) {
-      const { accessToken } = response.data.data;
-      const userData = response.data.data.user;
-
-      // Store access token in localStorage
-      localStorage.setItem("accessToken", accessToken);
-      return userData;
+      // console.log(response.data.data.questions);
+      return response.data.data.questions;
     }
   } catch (error) {
     console.log(error.message);
