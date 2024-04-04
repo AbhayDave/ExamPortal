@@ -23,10 +23,10 @@ const ExamSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
-  startTime: {
-    type: Date,
-    required: true,
-  },
+  // startTime: {
+  //   type: Date,
+  //   required: true,
+  // },
   attendees: [
     {
       type: Schema.Types.ObjectId,

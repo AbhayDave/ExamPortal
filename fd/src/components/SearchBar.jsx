@@ -53,7 +53,7 @@ const SearchBar = ({
 
   return (
     <div>
-      <form className="flex items-center" mx-auto onSubmit={handleSearch}>
+      <form className="flex items-center mx-auto" onSubmit={handleSearch}>
         <select
           value={selectedQuestionType}
           onChange={handleQuestionTypeChange}
