@@ -16,31 +16,33 @@ const ExamSchema = new mongoose.Schema({
     required: true,
   },
   examDuration: {
-    type: Date,
+    type: String,
     required: true,
   },
   examDate: {
     type: Date,
     required: true,
   },
-  // startTime: {
-  //   type: Date,
-  //   required: true,
-  // },
+  startTime: {
+    type: String,
+    required: true,
+  },
   attendees: [
     {
       type: Schema.Types.ObjectId,
       ref: "User",
     },
   ],
-  questions: [
+  CodingQuestions: [
     {
       type: Schema.Types.Mixed, // You can define a separate schema for questions if needed
     },
   ],
-  link: {
-    type: String,
-  },
+  MCQQuestions: [
+    {
+      type: Schema.Types.Mixed, // You can define a separate schema for questions if needed
+    },
+  ],
   status: {
     type: String,
     required: true,

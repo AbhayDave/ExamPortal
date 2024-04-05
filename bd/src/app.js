@@ -27,6 +27,7 @@ import userRouter from "./routes/user.routes.js";
 import codingQuestionRouter from "./routes/codingquestions.routes.js";
 import mcqQuestionRouter from "./routes/mcq.routes.js"
 import examRouter from "./routes/exam.routes.js"
+import { upload } from "./middlewares/multer.middleware.js";
 
 //routes declaration
 app.use("/api/v1/users", userRouter);
@@ -34,5 +35,9 @@ app.use("/api/v1/questions", codingQuestionRouter);
 app.use("/api/v1/mcq/questions", mcqQuestionRouter);
 app.use("/api/v1/exams", examRouter);
 
+app.post("/", upload.single('file'), (req, res) => {
+    console.log(req);
+    res.json("Done")
+})
 
 export { app };

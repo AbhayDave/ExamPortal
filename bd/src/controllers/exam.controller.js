@@ -3,34 +3,41 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Exam } from "../models/Exam.model.js";
 import xlsx from "xlsx";
+import { checkUsersExistByUsernames } from "./user.controller.js";
+import fs from "fs"
+
+
+const test = (req, res) => {
+  // console.log(req);
+  res.json("ABHAY DAVE")
+}
 
 // Example controller functions
 const createExam = asyncHandler(async (req, res) => {
   // Logic to create a new exam
 
-  try {
-    const {
+    let {
       title,
       description,
       //   creator,
-      duration,
       examDate,
       startTime,
       examDuration,
       CodingQuestions,
       MCQQuestions,
+      status
     } = req.body;
 
     if (
       [
         title,
         description,
-        duration,
         examDate,
         startTime,
         examDuration,
         CodingQuestions,
         MCQQuestions,
+        status
       ].some((field) => field?.trim() === "")
     ) {
       throw new ApiError(400, "All fields are required");
@@ -46,6 +53,8 @@ const createExam = asyncHandler(async (req, res) => {
 
     const attendeesLocalPath = req.file?.path;
 
+    console.log(attendeesLocalPath);
+
     if (!attendeesLocalPath) {
       throw new ApiError(400, "Attendees file is required");
     }
@@ -57,29 +66,82 @@ const createExam = asyncHandler(async (req, res) => {
     const sheet = workbook.Sheets[sheetName];
     const data = xlsx.utils.sheet_to_json(sheet);
 
-    // Process the extracted data as needed
-    console.log(data);
-
-    
+    // console.log(data);
 
 
-    // const newExam = new Exam({
-    //   title,
+    const usernames = data.map((user) => {
+      return user.username;
+    })
+
+    // console.log(usernames);
+
+    const validUsers = await checkUsersExistByUsernames(usernames);
+
+
+    // console.log(validUsers);
+
+    if (validUsers.length != usernames.length) {
+      throw new ApiError(401, "Check the Attendes List");
+    }
+
+    const studentIds = validUsers.map(user => {
+      return user._id;
+    })
+
+    // console.log(studentIds);
+
+    deleteFile(`./${req.file?.path}`)
+
+
+
+    CodingQuestions = CodingQuestions.split(",")
+    MCQQuestions = MCQQuestions.split(",")
+
+    // console.log(title,
     //   description,
-    //   creator: req.user._id,
-    //   duration,
+    //   req.user._id,
+    //   examDuration,
     //   examDate,
-    //   attendees,
-    //   questions,
-    //   link,
-    // });
-    // const savedExam = await newExam.save();
-    res.status(201).json("Working");
-  } catch (error) {
-    console.log(error);
-    res.status(400).json({ message: error.message });
-  }
+    //   status,
+    //   studentIds,
+    //   CodingQuestions,
+    //   MCQQuestions,
+    //   startTime,);
+
+    const newExam = new Exam({
+      title,
+      description,
+      creator: req.user._id,
+      examDuration,
+      examDate,
+      status,
+      attendees: studentIds,
+      CodingQuestions,
+      MCQQuestions,
+      startTime,
+    });
+
+    const savedExam = await newExam.save();
+
+      if(!savedExam){
+        throw new ApiError(401, "Exam Creation Failed");
+      }
+
+    return res
+      .status(201)
+      .json(new ApiResponse(200, savedExam, "Exam Created Successfully"));
+
 });
+
+const deleteFile = async (localFilePath) => {
+  fs.unlink(localFilePath, (err) => {
+    if (err) {
+      console.log(400, `Error deleting file: ${err}`);
+    } else {
+      console.log('File deleted successfully.');
+    }
+  })
+}
 
 const updateExam = asyncHandler(async (req, res) => {
   // Logic to update an existing exam
@@ -137,4 +199,17 @@ const getExamById = asyncHandler(async (req, res) => {
   }
 });
 
-export { createExam, updateExam, deleteExam, getExamById };
+const getAllExams = asyncHandler(async (req, res) => {
+  // Logic to retrieve an exam by ID
+  try {
+    const exams = await Exam.find({ status: { $in: ["Scheduled", "In Progress"]}});
+    if (!exams) {
+      return res.status(404).json({ message: "Exam not found" });
+    }
+    res.json(exams);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+export { createExam, updateExam, deleteExam, getExamById, test, getAllExams };

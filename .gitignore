@@ -24,3 +24,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+bd/src/tmp/my-uploads/test.xlsx
+bd/src/tmp/my-uploads/MOCK_DATA.xlsx

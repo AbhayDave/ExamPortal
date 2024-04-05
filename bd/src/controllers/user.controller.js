@@ -12,6 +12,7 @@ const generateAccessAndRefereshTokens = async (userId) => {
 
     user.refreshToken = refreshToken;
     await user.save({ validateBeforeSave: false });
+
     console.log(user);
 
     return { accessToken, refreshToken };
@@ -22,6 +23,7 @@ const generateAccessAndRefereshTokens = async (userId) => {
     );
   }
 };
+
 
 const registerUser = asyncHandler(async (req, res) => {
   // get user details from frontend
@@ -252,6 +254,8 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, user, "Account details updated successfully"));
 });
 
+
+
 // const updateUserAvatar = asyncHandler(async (req, res) => {
 //   const avatarLocalPath = req.file?.path;
 
@@ -437,6 +441,23 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
 //     );
 // });
 
+const checkUsersExistByUsernames = async (usernames) => {
+  try {
+
+
+    const Students = await User.find({ username: { $in: usernames.map(username => new RegExp(username, 'i')) }, role: 'student' }).select(
+      "-password -refreshToken"
+    );
+    // console.log(Students);
+
+    return Students;
+  } catch (error) {
+    console.error('Error while checking users existence:', error);
+    return false;
+  }
+}
+
+
 export {
   registerUser,
   loginUser,
@@ -445,6 +466,7 @@ export {
   changeCurrentPassword,
   getCurrentUser,
   updateAccountDetails,
+  checkUsersExistByUsernames
   //   updateUserAvatar,
   //   updateUserCoverImage,
   //   getUserChannelProfile,

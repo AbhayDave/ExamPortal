@@ -5,6 +5,7 @@ import {
   updateExam,
   deleteExam,
   getExamById,
+  getAllExams,
 } from "../controllers/exam.controller.js";
 
 import { upload } from "../middlewares/multer.middleware.js";
@@ -15,9 +16,10 @@ router.use(verifyJWT);
 router.use(verifyUserRole);
 
 // API endpoints for exams
-// router.post("/", upload.single("attendes"), createExam);
+router.post("/", upload.single('attendes'), createExam);
 
-router.post("/", createExam);
+router.get("/", getAllExams);
+// router.post("/", createExam);
 router.put("/:id", updateExam);
 router.delete("/:id", deleteExam);
 router.get("/:id", getExamById);
