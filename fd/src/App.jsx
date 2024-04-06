@@ -6,6 +6,7 @@ import Layout from "./components/Layout";
 import AllExam from "./pages/AllExam";
 import CreateExam from "./pages/CreateExam";
 import QuestionHut from "./pages/QuestionHut";
+import EditExam from "./pages/EditExam";
 
 export default function App() {
   return (
@@ -42,6 +43,14 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <QuestionHut />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/edit-exam/:id"
+            element={
+              <ProtectedRoute>
+                <EditExam />
               </ProtectedRoute>
             }
           />

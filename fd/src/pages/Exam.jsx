@@ -1,7 +1,13 @@
+import { useParams } from "react-router-dom"
+
+
 
 function Exam() {
+
+  const { id } = useParams();
+
   return (
-    <div>Exam</div>
+    <div>Exam {id}</div>
   )
 }
 

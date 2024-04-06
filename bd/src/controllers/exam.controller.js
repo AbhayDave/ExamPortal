@@ -212,4 +212,6 @@ const getAllExams = asyncHandler(async (req, res) => {
   }
 });
 
+
+
 export { createExam, updateExam, deleteExam, getExamById, test, getAllExams };

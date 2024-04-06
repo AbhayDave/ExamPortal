@@ -31,6 +31,35 @@ export async function createExam(
     }
 }
 
+export async function updateExam(
+    id, examData
+) {
+    console.log(examData);
+
+    try {
+        const accessToken = localStorage.getItem("accessToken");
+        const headers = {
+            Authorization: `Bearer ${accessToken}`,
+        };
+
+        const ApiUrl = `${baseUrl}/exams/${id}`
+
+        // console.log(ApiUrl);
+
+        const response = await axios.put(ApiUrl, examData, { headers })
+
+
+        if (response) {
+            console.log(response.data);
+            return response.data;
+        }
+
+    } catch (error) {
+        console.log(error.message);
+        throw error;
+    }
+}
+
 export async function uploadFile(
     data
 ) {
@@ -60,3 +89,58 @@ export async function uploadFile(
         throw error;
     }
 }
+
+export async function getAllExams() {
+    // console.log(examData);
+
+    try {
+        const accessToken = localStorage.getItem("accessToken");
+        const headers = {
+            Authorization: `Bearer ${accessToken}`,
+        };
+
+        const ApiUrl = `${baseUrl}/exams`
+
+        // console.log(ApiUrl);
+
+        const response = await axios.get(ApiUrl, { headers })
+
+
+        if (response) {
+            console.log(response.data);
+            return response.data;
+        }
+
+    } catch (error) {
+        console.log(error.message);
+        throw error;
+    }
+}
+
+export async function getExamByID(id) {
+    // console.log(examData);
+
+    try {
+        const accessToken = localStorage.getItem("accessToken");
+        const headers = {
+            Authorization: `Bearer ${accessToken}`,
+        };
+
+        const ApiUrl = `${baseUrl}/exams/${id}`
+
+        // console.log(ApiUrl);
+
+        const response = await axios.get(ApiUrl, { headers })
+
+
+        if (response) {
+            // console.log(response.data);
+            return response.data;
+        }
+
+    } catch (error) {
+        console.log(error.message);
+        throw error;
+    }
+}
+

@@ -1,11 +1,42 @@
 import { useForm } from "react-hook-form";
 import Input from "./Input";
-import { createExam } from "../Api/exam/examService";
-import { useState } from "react";
+import { createExam, updateExam } from "../Api/exam/examService";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-function CreateExamForm() {
-  const { register, handleSubmit, errors, setError } = useForm();
+function CreateExamForm({ exam }) {
+
+  // if (exam) console.log(new Date(exam?.examDate).toISOString().substring(0, 10))
+
+  const { register, handleSubmit, errors, setError, setValue } = useForm({
+    defaultValues: {
+      title: exam?.title || "",
+      description: exam?.description || "",
+      examDate: exam?.examDate || "",
+      status: exam?.status || "Scheduled",
+      startTime: exam?.startTime || "",
+      examDuration: exam?.examDuration || "",
+      CodingQuestions: exam?.CodingQuestions.join(",") || "",
+      MCQQuestions: exam?.MCQQuestions.join(",") || "",
+    },
+    mode: 'all'
+  });
+
+  useEffect(() => {
+
+    if (exam) {
+      setValue("examDate", new Date(exam?.examDate).toISOString().substring(0, 10)); // Set the default time value
+    }
+
+
+  }, [setValue, exam?.examDate, exam]);
+
+
+
   const [error, setEError] = useState("");
+  const navigate = useNavigate();
+  // const userData = useSelector((state) => state.auth.userData);
+
 
   function convertString(inputString) {
 
@@ -17,6 +48,18 @@ function CreateExamForm() {
 
     // Join the trimmed array back into a comma-separated string
     return trimmedList.join(",");
+  }
+
+  function convertArray(inputString) {
+
+    // Split the string into an array based on commas
+    let listOfValues = inputString.split(",");
+
+    // Remove leading/trailing spaces from each value in the array
+    let trimmedList = listOfValues.map((value) => value.trim());
+
+    // Join the trimmed array back into a comma-separated string
+    return trimmedList;
   }
 
   function getHHMM(date) {
@@ -39,54 +82,150 @@ function CreateExamForm() {
   };
 
   const onSubmitHandler = async (data) => {
+
+
+
     setEError("");
     // console.log(data.attendes[0]);
 
-    let { CodingQuestions, MCQQuestions, examDate, startTime } =
-      data;
+    if (exam) {
+      const updatedData = {};
 
-    const givenDate = new Date(examDate);
-    const currentDate = new Date();
+      
 
-    const givenTime = startTime;
-    const currentTime = getHHMM(givenDate);
+      // Check if the values of the 'attendes' key are different
+      // if (exam.attendes[0] !== data?.attendes[0]) {
+      //   updatedData.attendes = data?.attendes[0];
+      // }
 
-    // console.log(givenTime, currentTime);
+      // Check if the values of the 'title' key are different
+      if (exam.title !== data?.title) {
+        updatedData.title = data?.title;
+      }
+
+      // Check if the values of the 'description' key are different
+      if (exam.description !== data?.description) {
+        updatedData.description = data?.description;
+      }
 
 
-    if (givenDate < currentDate) {
-      alert("Given date is in the past");
-      return;
-    } else if (givenDate == currentDate && givenTime > currentTime) {
-      console.log("Given date and time is available");
-    } else if (givenDate > currentDate) {
-      console.log("Given date and time is available");
+      //  data.CodingQuestions = convertArray(data?.CodingQuestions);
+      //  data.MCQQuestions = convertArray(data?.MCQQuestions);
+
+
+      // const oldFormatCodingQuestions = exam.CodingQuestions.join(",") 
+      // const oldFormatMCQQuestions = exam.MCQQuestions.join(",")
+
+      // Check if the values of the 'CodingQuestions' key are different
+      if (exam.CodingQuestions.length !== data?.CodingQuestions.length) {
+        updatedData.CodingQuestions = convertString(data?.CodingQuestions);
+      } else {
+        for (let i = 0; i < exam.CodingQuestions.length; i++) {
+          if (exam.CodingQuestions[i] !== data?.CodingQuestions[i]) {
+            updatedData.CodingQuestions = convertString(data?.CodingQuestions);
+            break;
+          }
+        }
+      }
+
+
+      // Check if the values of the 'MCQQuestions' key are different
+      if (exam.MCQQuestions.length !== data?.MCQQuestions.length) {
+        updatedData.MCQQuestions = convertString(data?.MCQQuestions);
+      } else {
+        for (let i = 0; i < exam.MCQQuestions.length; i++) {
+          if (exam.MCQQuestions[i] !== data?.MCQQuestions[i]) {
+            updatedData.MCQQuestions = convertString(data?.MCQQuestions);
+            break;
+          }
+        }
+      }
+
+      // Check if the values of the 'examDate' key are different
+      if (exam.examDate !== data?.examDate) {
+        updatedData.examDate = data?.examDate;
+      }
+
+      // Check if the values of the 'examDuration' key are different
+      if (exam.examDuration !== data?.examDuration) {
+        updatedData.examDuration = data?.examDuration;
+      }
+
+      // Check if the values of the 'startTime' key are different
+      if (exam.startTime !== data?.startTime) {
+        updatedData.startTime = data?.startTime;
+      }
+
+      // Check if the values of the 'status' key are different
+      if (exam.status !== data?.status) {
+        updatedData.status = data?.status;
+      }
+
+      if (Object.keys(updatedData).length > 0) {
+        const formData = new FormData();
+        for (const [key, value] of Object.entries(updatedData)) {
+          formData.append(key, value);
+        }
+
+        try {
+          const response = await updateExam(exam._id, formData);
+          if (response) alert("Exam Updated Successfully");
+        } catch (error) {
+          console.log(error.message);
+          setEError(error.message);
+        }
+      }
     } else {
-      alert("Slot Not available");
-      return;
+
+      let { CodingQuestions, MCQQuestions, examDate, startTime } =
+        data;
+
+      const givenDate = new Date(examDate);
+      const currentDate = new Date();
+
+      const givenTime = startTime;
+      const currentTime = getHHMM(givenDate);
+
+      // console.log(givenTime, currentTime);
+
+
+      if (givenDate < currentDate) {
+        alert("Given date is in the past");
+        return;
+      } else if (givenDate == currentDate && givenTime > currentTime) {
+        console.log("Given date and time is available");
+      } else if (givenDate > currentDate) {
+        console.log("Given date and time is available");
+      } else {
+        alert("Slot Not available");
+        return;
+      }
+
+      data.CodingQuestions = convertString(CodingQuestions);
+      data.MCQQuestions = convertString(MCQQuestions);
+
+      const formData = new FormData();
+      formData.append('attendes', data.attendes[0]);
+      formData.append('title', data.title);
+      formData.append('description', data.description);
+      formData.append('CodingQuestions', data.CodingQuestions);
+      formData.append('MCQQuestions', data.MCQQuestions);
+      formData.append('examDate', data.examDate);
+      formData.append('examDuration', data.examDuration);
+      formData.append('startTime', data.startTime);
+      formData.append('status', data.status);
+
+      try {
+        const response = await createExam(formData)
+        if (response) alert("Exam Created Successfully");
+      } catch (error) {
+        console.log(error.message);
+        setEError(error.message);
+      }
+
     }
 
-    data.CodingQuestions = convertString(CodingQuestions);
-    data.MCQQuestions = convertString(MCQQuestions);
 
-    const formData = new FormData();
-    formData.append('attendes', data.attendes[0]);
-    formData.append('title', data.title);
-    formData.append('description', data.description);
-    formData.append('CodingQuestions', data.CodingQuestions);
-    formData.append('MCQQuestions', data.MCQQuestions);
-    formData.append('examDate', data.examDate);
-    formData.append('examDuration', data.examDuration);
-    formData.append('startTime', data.startTime);
-    formData.append('status', data.status);
-
-    try {
-      const response = await createExam(formData)
-      if (response) alert("Exam Created Successfully");
-    } catch (error) {
-      console.log(error.message);
-      setEError(error.message);
-    }
 
     // Make API calls or perform further actions with the form data
   };
@@ -94,7 +233,7 @@ function CreateExamForm() {
   return (
     <div className="container w-1/2 bg-white shadow-md rounded-lg p-6 mx-auto my-16">
       <div className="header bg-red-600 text-white font-sans text-lg text-center py-3 rounded-t-lg">
-        Create Exam
+        {exam ? "Update Exam" : "Create Exam"}
       </div>
       <form
         onSubmit={handleSubmit(onSubmitHandler)}
@@ -151,17 +290,19 @@ function CreateExamForm() {
             {...register("examDuration", { required: true, validate: validateDuration })}
           />
 
+          {exam && (
+            <Input
+              type="file"
+              label="Eligible Students: "
+              placeholder="Eligible Students"
+              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+              accept=".xlsx, .xls"
+              {...register('attendes', {
+                required: true,
+              })}
+            />
+          )}
 
-          <Input
-            type="file"
-            label="Eligible Students: "
-            placeholder="Eligible Students"
-            className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-            accept=".xlsx, .xls"
-            {...register('attendes', {
-              required: true,
-            })}
-          />
 
           <Input
             type="text"
@@ -180,7 +321,7 @@ function CreateExamForm() {
             className="w-full col-span-2 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
             {...register("MCQQuestions", {
               required: true,
-              
+
             })}
           />
 
@@ -200,7 +341,7 @@ function CreateExamForm() {
             </select>
           </div>
           <button className="footer col-span-2 bg-red-600 text-white mt-3 font-sans w-full text-center py-3 rounded-b-lg">
-            Create Exam
+            {exam ? "Update Exam" : "Create Exam"}
           </button>
         </div>
       </form>

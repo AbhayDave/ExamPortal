@@ -14,7 +14,7 @@ const saveToLocalStorage = (state) => {
       auth: state.auth,
     };
     const serializedState = JSON.stringify(newState);
-    localStorage.setItem("Techno-Hub-Blog", serializedState);
+    localStorage.setItem("Techno-Hub-Exam-Portal", serializedState);
   } catch (e) {
     console.warn(e);
     alert(e.message);
@@ -23,7 +23,7 @@ const saveToLocalStorage = (state) => {
 
 const loadFromLocalStorage = () => {
   try {
-    const serializedState = localStorage.getItem("Techno-Hub-Blog");
+    const serializedState = localStorage.getItem("Techno-Hub-Exam-Portal");
     if (serializedState === null) return initialState;
     return JSON.parse(serializedState);
   } catch (e) {
