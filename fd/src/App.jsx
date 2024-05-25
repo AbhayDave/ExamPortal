@@ -7,12 +7,17 @@ import AllExam from "./pages/AllExam";
 import CreateExam from "./pages/CreateExam";
 import QuestionHut from "./pages/QuestionHut";
 import EditExam from "./pages/EditExam";
+import PreExam from "./pages/PreExam";
+import Exam from "./pages/Exam";
+import AfterExam from "./pages/AfterExam";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/exam/:id" element={<PreExam />} />
+        <Route path="/ex/:id" element={<Exam />} />
         <Route path="/" element={<Layout />}>
           <Route
             index
@@ -51,6 +56,14 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <EditExam />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/exam-done"
+            element={
+              <ProtectedRoute>
+                <AfterExam/>
               </ProtectedRoute>
             }
           />

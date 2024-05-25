@@ -21,7 +21,7 @@ export async function createExam(
 
 
         if (response) {
-            console.log(response.data);
+            // console.log(response.data);
             return response.data;
         }
 
@@ -50,7 +50,7 @@ export async function updateExam(
 
 
         if (response) {
-            console.log(response.data);
+            // console.log(response.data);
             return response.data;
         }
 
@@ -79,7 +79,7 @@ export async function uploadFile(
 
 
         if (response) {
-            console.log(response);
+            // console.log(response);
             return response
             // return response.data.data.questions;
         }
@@ -107,7 +107,7 @@ export async function getAllExams() {
 
 
         if (response) {
-            console.log(response.data);
+            // console.log(response.data);
             return response.data;
         }
 
@@ -144,3 +144,58 @@ export async function getExamByID(id) {
     }
 }
 
+export async function submitExam(submission) {
+  // console.log(examData);
+
+  try {
+    const accessToken = localStorage.getItem("accessToken");
+    const headers = {
+      Authorization: `Bearer ${accessToken}`,
+    };
+
+    const ApiUrl = `${baseUrl}/submit-exam/submit`;
+
+    // console.log(submission);
+
+    const examId = submission.examDetails.examId;
+
+    const answers = {
+      codingQuestionsAnswers: [...submission.codingQuestions],
+      mcqQuestionsAnswers: [...submission.mcqQuestions],
+    };
+
+    // console.log(answers.codingQuestionsAnswers[0]);
+    // console.log(answers.mcqQuestionsAnswers[0]);
+
+    const answerData = {
+      examId,
+      answers,
+    };
+
+    console.log("answerData", answerData);
+
+    const response = await axios.post(ApiUrl, answerData, { headers });
+
+    if (response) {
+      console.log(response.data);
+      return response.data;
+    }
+  } catch (error) {
+    console.log(error.message);
+    throw error;
+  }
+}
+
+
+// codingQuestions
+// : 
+// (4) [{…}, {…}, {…}, {…}]
+// examDetails
+// : 
+// {examName: 'test3', examDescription: 'tes2', examDate: '2024-04-13T00:00:00.000Z', duration: '01:00', totalQuestions: 5, …}
+// mcqQuestions
+// : 
+// [{…}]
+// userResponses
+// : 
+// {}

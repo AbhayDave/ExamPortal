@@ -1,25 +1,33 @@
 import { useSelector } from 'react-redux'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
-function Exam(props) {
+function ExamTab(props) {
 
     const { viewDetailsHandler, exam } = props
 
-    const userData = useSelector((state) => state.auth.userData);
+    const navigate = useNavigate()
 
+    const userData = useSelector((state) => state.auth.userData);
+    
 
     const {
-        _id,
-        title,
-        description,
-        creator,
-        examDate,
-        startTime,
-        examDuration,
-        CodingQuestions,
-        MCQQuestions,
-        status
+      _id,
+      title,
+      description,
+      creator,
+      examDate,
+      startTime,
+      examDuration,
+      CodingQuestions,
+      MCQQuestions,
+      status,
     } = exam;
+
+    const giveExamHandler = () => {
+        navigate(`/exam/${_id}`)
+    }
+
+
 
     return (
         <div className="flex justify-evenly text-white text-lg rounded-xl px-4 w-full h-40 bg-gray-500">
@@ -41,7 +49,7 @@ function Exam(props) {
                     Start Exam
                 </button> : null} */}
 
-                {status === "In Progress" && userData.role === 'student' ? <button className="bg-gray-700 text-md px-2 py-1 rounded-lg hover:bg-black hover:font-semibold">
+                {status === "In Progress" && userData.role === 'student' ? <button onClick={giveExamHandler} className="bg-gray-700 text-md px-2 py-1 rounded-lg hover:bg-black hover:font-semibold">
                     Give Exam
                 </button> : null}
 
@@ -71,4 +79,4 @@ function Exam(props) {
     )
 }
 
-export default Exam
+export default ExamTab

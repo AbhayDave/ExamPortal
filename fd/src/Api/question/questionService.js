@@ -38,3 +38,52 @@ export async function getQuestionsBasedOnCategoryAndTitle(
   }
 }
 
+export async function getMCQQuestionsByID(questionID) {
+  try {
+
+    const accessToken = localStorage.getItem("accessToken");
+    const headers = {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    };
+
+    const ApiUrl = `${baseUrl}/mcq/questions/${questionID}`;
+
+
+    const response = await axios.get(ApiUrl, {
+      headers,
+    });
+
+    if (response) {
+      // console.log(response);
+      return response.data.data;
+    }
+  } catch (error) {
+    console.log(error.message);
+    throw error;
+  }
+}
+
+export async function getCodingQuestionsByID(questionID) {
+  try {
+    const accessToken = localStorage.getItem("accessToken");
+    const headers = {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    };
+
+    const ApiUrl = `${baseUrl}/questions/${questionID}`
+
+    const response = await axios.get(ApiUrl, {
+      headers,
+    });
+
+    if (response) {
+      // console.log(response);
+      return response.data.data;
+    }
+  } catch (error) {
+    console.log(error.message);
+    throw error;
+  }
+}

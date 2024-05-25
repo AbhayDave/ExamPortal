@@ -9,7 +9,7 @@ import {
 } from "../controllers/codingquestions.controller.js"; 
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
-router.use(verifyJWT);
+// router.use(verifyJWT);
 
 // Route for getting all questions with pagination, sorting, and filtering
 router.get("/", getAllQuestions);

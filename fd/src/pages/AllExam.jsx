@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Exam from "../components/Exam";
+import ExamTab from "../components/ExamTab";
 import { getAllExams } from "../Api/exam/examService";
 
 function AllExam() {
@@ -16,14 +16,11 @@ function AllExam() {
         setExams(response)
 
       }
-      console.log(response);
+      // console.log(response);
     }
 
     fetchExams()
 
-    // if(exams){
-    //   setExams(exams)
-    // }
 
   }, [])
 
@@ -51,7 +48,13 @@ function AllExam() {
 
       <div className="w-full flex flex-col overflow-y-auto px-5 py-10 max-h-full border gap-2 items-center">
         {exams && exams.map((exam) => {
-          return (<Exam key={exam._id} viewDetailsHandler={viewDetailsHandler} exam={exam} />)
+          return (
+            <ExamTab
+              key={exam._id}
+              viewDetailsHandler={viewDetailsHandler}
+              exam={exam}
+            />
+          );
         })}
       </div>
       {/* </div> */}

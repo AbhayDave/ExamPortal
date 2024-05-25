@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function CreateExamForm({ exam }) {
-
   // if (exam) console.log(new Date(exam?.examDate).toISOString().substring(0, 10))
 
   const { register, handleSubmit, errors, setError, setValue } = useForm({
@@ -19,27 +18,23 @@ function CreateExamForm({ exam }) {
       CodingQuestions: exam?.CodingQuestions.join(",") || "",
       MCQQuestions: exam?.MCQQuestions.join(",") || "",
     },
-    mode: 'all'
+    mode: "all",
   });
 
   useEffect(() => {
-
     if (exam) {
-      setValue("examDate", new Date(exam?.examDate).toISOString().substring(0, 10)); // Set the default time value
+      setValue(
+        "examDate",
+        new Date(exam?.examDate).toISOString().substring(0, 10)
+      ); // Set the default time value
     }
-
-
   }, [setValue, exam?.examDate, exam]);
-
-
 
   const [error, setEError] = useState("");
   const navigate = useNavigate();
   // const userData = useSelector((state) => state.auth.userData);
 
-
   function convertString(inputString) {
-
     // Split the string into an array based on commas
     let listOfValues = inputString.split(",");
 
@@ -51,7 +46,6 @@ function CreateExamForm({ exam }) {
   }
 
   function convertArray(inputString) {
-
     // Split the string into an array based on commas
     let listOfValues = inputString.split(",");
 
@@ -64,8 +58,8 @@ function CreateExamForm({ exam }) {
 
   function getHHMM(date) {
     // Get hours and minutes using zero-padded format
-    let hours = date.getHours().toString().padStart(2, '0');
-    let minutes = date.getMinutes().toString().padStart(2, '0');
+    let hours = date.getHours().toString().padStart(2, "0");
+    let minutes = date.getMinutes().toString().padStart(2, "0");
 
     // Combine hours and minutes with a colon (:)
     return hours + ":" + minutes;
@@ -76,22 +70,17 @@ function CreateExamForm({ exam }) {
     const regex = /^([0-1][0-9]|2[0-3]):([0-5][0-9])$/;
     if (!regex.test(value)) {
       // alert('Invalid duration format. Please use HH:MM.'); ``
-      return 'Invalid duration format. Please use HH:MM.'
+      return "Invalid duration format. Please use HH:MM.";
     }
     return undefined; // No error if valid
   };
 
   const onSubmitHandler = async (data) => {
-
-
-
     setEError("");
     // console.log(data.attendes[0]);
 
     if (exam) {
       const updatedData = {};
-
-      
 
       // Check if the values of the 'attendes' key are different
       // if (exam.attendes[0] !== data?.attendes[0]) {
@@ -108,12 +97,10 @@ function CreateExamForm({ exam }) {
         updatedData.description = data?.description;
       }
 
-
       //  data.CodingQuestions = convertArray(data?.CodingQuestions);
       //  data.MCQQuestions = convertArray(data?.MCQQuestions);
 
-
-      // const oldFormatCodingQuestions = exam.CodingQuestions.join(",") 
+      // const oldFormatCodingQuestions = exam.CodingQuestions.join(",")
       // const oldFormatMCQQuestions = exam.MCQQuestions.join(",")
 
       // Check if the values of the 'CodingQuestions' key are different
@@ -127,7 +114,6 @@ function CreateExamForm({ exam }) {
           }
         }
       }
-
 
       // Check if the values of the 'MCQQuestions' key are different
       if (exam.MCQQuestions.length !== data?.MCQQuestions.length) {
@@ -176,9 +162,7 @@ function CreateExamForm({ exam }) {
         }
       }
     } else {
-
-      let { CodingQuestions, MCQQuestions, examDate, startTime } =
-        data;
+      let { CodingQuestions, MCQQuestions, examDate, startTime } = data;
 
       const givenDate = new Date(examDate);
       const currentDate = new Date();
@@ -187,7 +171,6 @@ function CreateExamForm({ exam }) {
       const currentTime = getHHMM(givenDate);
 
       // console.log(givenTime, currentTime);
-
 
       if (givenDate < currentDate) {
         alert("Given date is in the past");
@@ -205,27 +188,24 @@ function CreateExamForm({ exam }) {
       data.MCQQuestions = convertString(MCQQuestions);
 
       const formData = new FormData();
-      formData.append('attendes', data.attendes[0]);
-      formData.append('title', data.title);
-      formData.append('description', data.description);
-      formData.append('CodingQuestions', data.CodingQuestions);
-      formData.append('MCQQuestions', data.MCQQuestions);
-      formData.append('examDate', data.examDate);
-      formData.append('examDuration', data.examDuration);
-      formData.append('startTime', data.startTime);
-      formData.append('status', data.status);
+      formData.append("attendes", data.attendes[0]);
+      formData.append("title", data.title);
+      formData.append("description", data.description);
+      formData.append("CodingQuestions", data.CodingQuestions);
+      formData.append("MCQQuestions", data.MCQQuestions);
+      formData.append("examDate", data.examDate);
+      formData.append("examDuration", data.examDuration);
+      formData.append("startTime", data.startTime);
+      formData.append("status", data.status);
 
       try {
-        const response = await createExam(formData)
+        const response = await createExam(formData);
         if (response) alert("Exam Created Successfully");
       } catch (error) {
         console.log(error.message);
         setEError(error.message);
       }
-
     }
-
-
 
     // Make API calls or perform further actions with the form data
   };
@@ -240,7 +220,6 @@ function CreateExamForm({ exam }) {
         className="mt-8"
         encType="multipart/form-data"
       >
-
         <div className="mt-8 w-full grid gap-4 grid-cols-2">
           <Input
             label="Exam Title: "
@@ -287,22 +266,22 @@ function CreateExamForm({ exam }) {
             label="Exam Duration: "
             placeholder="Enter duration (HH:MM)"
             className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-            {...register("examDuration", { required: true, validate: validateDuration })}
+            {...register("examDuration", {
+              required: true,
+              validate: validateDuration,
+            })}
           />
 
-          {exam && (
-            <Input
-              type="file"
-              label="Eligible Students: "
-              placeholder="Eligible Students"
-              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-              accept=".xlsx, .xls"
-              {...register('attendes', {
-                required: true,
-              })}
-            />
-          )}
-
+          <Input
+            type="file"
+            label="Eligible Students: "
+            placeholder="Eligible Students"
+            className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+            accept=".xlsx, .xls"
+            {...register("attendes", {
+              required: true,
+            })}
+          />
 
           <Input
             type="text"
@@ -321,7 +300,6 @@ function CreateExamForm({ exam }) {
             className="w-full col-span-2 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
             {...register("MCQQuestions", {
               required: true,
-
             })}
           />
 
